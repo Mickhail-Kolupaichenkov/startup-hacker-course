@@ -1,16 +1,53 @@
+<style scoped>
+.booksContainer {
+  box-sizing: border-box;
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 50px;
+  border: 1px solid #c0c0c0;
+  border-radius: 20px;
+  margin: 20px auto;
+}
+
+.cardItem {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  padding: 10px;
+}
+
+.cardItem_info span {
+  display: block;
+}
+
+.cardItem_img {
+  display: flex;
+  justify-content: center;
+}
+</style>
+
 <template>
   <div class="app">
     <!--<FontAwesomeIcon icon="star" />-->
     <div class="booksContainer">
       <div class="cardItem" v-for="book in books" :key="book.id">
-        <h3>{{ book.title }}</h3>
-        <img :src="book.img" :alt="book.title" width="200">
-        <p>{{ book.description }}</p>
-        <span>Жанр: {{ book.genre }}</span>
-        <span v-if="book.isAdult"> 18+</span>
-        <span>Рейтинг: {{ book.stars }}
-          <FontAwesomeIcon icon="star" />
-        </span>
+        <div class="cardItem_info">
+          <h3>{{ book.title }}</h3>
+          <p>{{ book.description }}</p>
+          <span>Жанр: {{ book.genre }} <b v-if="book.isAdult">18+</b></span>
+          <span>Рейтинг: {{ book.stars }}
+            <FontAwesomeIcon icon="star" />
+          </span>
+        </div>
+        <div class="cardItem_img">
+          <img :src="book.img" :alt="book.title" width="200">
+        </div>
       </div>
     </div>
 
