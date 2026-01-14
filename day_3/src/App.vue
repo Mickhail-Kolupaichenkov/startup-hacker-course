@@ -25,11 +25,12 @@
 
           <input placeholder="URL обложки" v-model="newBook.img">
 
-          <select v-model="newBook.genres" multiple>
-            <option value="">Жанр</option>
+          <label for="genres">Жанры:</label>
+          <select name="genres" v-model="newBook.genres" multiple>
             <option value="Роман">Роман</option>
             <option value="Фантастика">Фантастика</option>
             <option value="Детектив">Детектив</option>
+            <option value="Бизнес-книга">Бизнес книга</option>
           </select>
 
           <div class="checkbox">
@@ -173,7 +174,7 @@ const books = ref([
     id: 3,
     title: 'Стратегическое управление на основе маркетингового анализа. Инструменты, проблемы, ситуации',
     description: 'Книга в которой автор описывает классические и собственные инструменты стратегического управления и маркетингового анализа.',
-    genres: ['бизнес-книга'],
+    genres: ['Бизнес-книга'],
     img: bookImg3,
     isAdult: false,
     stars: 0
