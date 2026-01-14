@@ -9,8 +9,8 @@
 
     <div v-if="showForm" class="form-overlay">
       <div class="form">
-        <h3>Новая книга</h3>
-        <form @submit.prevent="addBook">
+        <h3>{{ editingBookId ? 'Редактировать книгу' : 'Новая книга' }}</h3>
+        <form @submit.prevent="editingBookId ? updateBook() : addBook()">
           <input placeholder="Название" v-model="newBook.title">
 
           <textarea placeholder="Описание" v-model="newBook.description"></textarea>
@@ -36,8 +36,8 @@
           </div>
 
           <div class="form-buttons">
-            <button type="submit">Добавить</button>
-            <button @click="showForm = false">Отменить</button>
+            <button type="submit">{{ editingBookId ? 'Сохранить' : 'Добавить' }}</button>
+            <button type="button" @click="cancelForm">Отменить</button>
           </div>
         </form>
       </div>
@@ -75,6 +75,11 @@
           <img :src="book.img" :alt="book.title" width="200">
         </div>
 
+        <div class="book-actions">
+          <button @click="editBook(book)" class="btn-edit">Редактировать</button>
+          <button @click="deleteBook(book.id)" class="btn-delete">Удалить</button>
+        </div>
+
       </div>
     </div>
 
@@ -87,6 +92,7 @@ import bookImg1 from '@/assets/images/book1.png'
 import bookImg2 from '@/assets/images/book2.png'
 import bookImg3 from '@/assets/images/book3.png'
 
+const editingBookId = ref(null)
 const showForm = ref(false)
 
 const newBook = ref({
@@ -106,41 +112,6 @@ const errors = ref({
 const hasErrors = computed(() => {
   return errors.value.title || errors.value.genres
 })
-
-const addBook = () => {
-  errors.value = { title: '', genres: '' }
-
-  if (!newBook.value.title.trim()) {
-    errors.value.title = 'Введите название книги'
-    return
-  }
-
-  if (newBook.value.genres.length === 0) {
-    errors.value.genres = 'Выберите хотя бы один жанр'
-    return
-  }
-
-  books.value.push({
-    id: books.value.length + 1,
-    title: newBook.value.title,
-    description: newBook.value.description,
-    genres: [...newBook.value.genres],
-    img: newBook.value.img,
-    isAdult: newBook.value.isAdult,
-    stars: 0
-  })
-
-  newBook.value = {
-    title: '',
-    description: '',
-    genres: [],
-    img: '',
-    isAdult: false,
-    stars: 0
-  }
-
-  showForm.value = false
-}
 
 const books = ref([
   {
@@ -171,6 +142,89 @@ const books = ref([
     stars: 0
   }
 ])
+
+const editBook = (book) => {
+  editingBookId.value = book.id
+  newBook.value = {
+    title: book.title,
+    description: book.description,
+    genres: [...book.genres],
+    img: book.img,
+    isAdult: book.isAdult,
+    stars: book.stars
+  }
+  showForm.value = true
+}
+
+const validateForm = () => {
+  errors.value = { title: '', genres: '' }
+
+  if (!newBook.value.title.trim()) {
+    errors.value.title = 'Введите название книги'
+    return false
+  }
+
+  if (newBook.value.genres.length === 0) {
+    errors.value.genres = 'Выберите хотя бы один жанр'
+    return false
+  }
+
+  return true
+}
+
+const addBook = () => {
+  if (!validateForm()) return
+
+  books.value.push({
+    id: books.value.length + 1,
+    title: newBook.value.title,
+    description: newBook.value.description,
+    genres: [...newBook.value.genres],
+    img: newBook.value.img,
+    isAdult: newBook.value.isAdult,
+    stars: 0
+  })
+
+  cancelForm()
+}
+
+const updateBook = () => {
+  if (!validateForm()) return
+
+  const index = books.value.findIndex(book => book.id === editingBookId.value)
+  if (index !== -1) {
+    books.value[index] = {
+      ...books.value[index],
+      title: newBook.value.title,
+      description: newBook.value.description,
+      genres: [...newBook.value.genres],
+      img: newBook.value.img,
+      isAdult: newBook.value.isAdult
+    }
+  }
+
+  cancelForm()
+}
+
+const cancelForm = () => {
+  newBook.value = {
+    title: '',
+    description: '',
+    genres: [],
+    img: '',
+    isAdult: false,
+    stars: 0
+  }
+  editingBookId.value = null
+  errors.value = { title: '', genres: '' }
+  showForm.value = false
+}
+
+const deleteBook = (id) => {
+  if (confirm('Вы уверены, что хотите удалить эту книгу?')) {
+    books.value = books.value.filter(book => book.id !== id)
+  }
+}
 
 const setStars = (book, stars) => {
   book.stars = stars
@@ -485,5 +539,35 @@ select[multiple] {
 
 .errors-block p:last-child {
   margin-bottom: 0;
+}
+
+.book-actions {
+  display: flex;
+  gap: 8px;
+  padding: 15px 20px;
+  border-top: 1px solid #e1e8ed;
+  background: #f9f9f9;
+}
+
+.btn-edit {
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.btn-delete {
+  background: #e0245e;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
 }
 </style>
