@@ -2,7 +2,13 @@
   <div class="app">
     <div class="header">
       <h1>📖 Моя коллекция книг</h1>
-      <p>Здесь собраны мои любимые произведения</p>
+      <button class="add-btn">
+        <span>+</span> Добавить книгу
+      </button>
+    </div>
+
+    <div>
+      <form action=""></form>
     </div>
 
     <div class="booksContainer">
@@ -11,12 +17,24 @@
           <h3>{{ book.title }}</h3>
           <p>{{ book.description }}</p>
           <span>Жанр: {{ book.genre }} <b v-if="book.isAdult">18+</b></span>
-          <span>Рейтинг: {{ book.stars }}
-            <FontAwesomeIcon icon="star" />
-          </span>
+          <div class="rating-stars">
+            <span>Рейтинг: </span>
+            <span v-for="n in 5" :key="n" class="star" :class="{
+              'active': n <= book.stars,
+              'inactive': n > book.stars
+            }" @click="setStars(book, n)">
+              <FontAwesomeIcon icon="star" />
+            </span>
+          </div>
         </div>
 
         <div class="cardItem_img">
+          <div class="big-rating-star" :class="{ 'no-rating': book.stars === 0 }">
+            <span class="star-value">
+              {{ book.stars > 0 ? book.stars : '—' }}
+            </span>
+            <FontAwesomeIcon icon="star" class="star-icon" />
+          </div>
           <img :src="book.img" :alt="book.title" width="200">
         </div>
 
@@ -40,7 +58,7 @@ const books = ref([
     genre: 'Роман',
     img: bookImg1,
     isAdult: false,
-    stars: 5
+    stars: 0
   },
   {
     id: 2,
@@ -49,7 +67,7 @@ const books = ref([
     genre: 'Роман',
     img: bookImg2,
     isAdult: true,
-    stars: 4
+    stars: 0
   },
   {
     id: 3,
@@ -58,9 +76,13 @@ const books = ref([
     genre: 'бизнес-книга',
     img: bookImg3,
     isAdult: false,
-    stars: 4
+    stars: 0
   }
 ])
+
+const setStars = (book, stars) => {
+  book.stars = stars
+}
 </script>
 
 <style scoped>
@@ -162,6 +184,7 @@ const books = ref([
 }
 
 .cardItem_img {
+  position: relative;
   height: 280px;
   background: #f5f8fa;
   border-bottom: 1px solid #e1e8ed;
@@ -178,8 +201,101 @@ const books = ref([
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.cardItem_info span svg {
+/* .cardItem_info span svg {
   color: #ffad1f;
   margin-left: 4px;
+} */
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  flex-wrap: nowrap;
+  overflow: visible;
+}
+
+.rating-stars>span:first-child {
+  color: #657786;
+  font-size: 14px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.rating-stars>span.star {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0 2px;
+}
+
+.rating-stars>span.star svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rating-stars>span.star.active svg {
+  color: #FFD700 !important;
+}
+
+.rating-stars>span.star.inactive svg {
+  color: #e0e0e0 !important;
+}
+
+.rating-stars>span.star:hover svg {
+  transform: scale(1.3);
+  color: #ffcc00 !important;
+}
+
+.big-rating-star {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  background: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.big-rating-star:not(.no-rating) .star-icon {
+  color: #FFD700 !important;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+
+.big-rating-star.no-rating .star-icon {
+  color: #b0b0b0 !important;
+}
+
+.big-rating-star .star-icon {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-size: 40px;
+}
+
+.big-rating-star .star-value {
+  position: relative;
+  z-index: 11;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  pointer-events: none;
+}
+
+.big-rating-star.no-rating .star-value {
+  color: #666;
 }
 </style>
