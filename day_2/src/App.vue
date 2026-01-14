@@ -15,9 +15,11 @@
             <FontAwesomeIcon icon="star" />
           </span>
         </div>
+
         <div class="cardItem_img">
           <img :src="book.img" :alt="book.title" width="200">
         </div>
+
       </div>
     </div>
 
