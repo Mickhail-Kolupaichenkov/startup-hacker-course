@@ -2,13 +2,45 @@
   <div class="app">
     <div class="header">
       <h1>📖 Моя коллекция книг</h1>
-      <button class="add-btn">
+      <button class="add-btn" @click="showForm = true">
         <span>+</span> Добавить книгу
       </button>
     </div>
 
-    <div>
-      <form action=""></form>
+    <div v-if="showForm" class="form-overlay">
+      <div class="form">
+        <h3>Новая книга</h3>
+        <form @submit.prevent="addBook">
+          <input placeholder="Название" v-model="newBook.title">
+
+          <textarea placeholder="Описание" v-model="newBook.description"></textarea>
+
+          <input placeholder="URL обложки" v-model="newBook.img">
+
+          <select v-model="newBook.genres" multiple>
+            <option value="">Жанр</option>
+            <option value="Роман">Роман</option>
+            <option value="Фантастика">Фантастика</option>
+            <option value="Детектив">Детектив</option>
+          </select>
+
+
+          <div class="checkbox">
+            <input type="checkbox" id="adult" v-model="newBook.isAdult">
+            <label for="adult">18+</label>
+          </div>
+
+          <div v-if="hasErrors" class="errors-block">
+            <p v-if="errors.title">{{ errors.title }}</p>
+            <p v-if="errors.genres">{{ errors.genres }}</p>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit">Добавить</button>
+            <button @click="showForm = false">Отменить</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <div class="booksContainer">
@@ -16,7 +48,12 @@
         <div class="cardItem_info">
           <h3>{{ book.title }}</h3>
           <p>{{ book.description }}</p>
-          <span>Жанр: {{ book.genre }} <b v-if="book.isAdult">18+</b></span>
+          <span>Жанр:
+            <span v-for="genre in book.genres" :key="genre">
+              {{ genre }}
+            </span>
+            <b v-if="book.isAdult">18+</b>
+          </span>
           <div class="rating-stars">
             <span>Рейтинг: </span>
             <span v-for="n in 5" :key="n" class="star" :class="{
@@ -45,17 +82,72 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import bookImg1 from '@/assets/images/book1.png'
 import bookImg2 from '@/assets/images/book2.png'
 import bookImg3 from '@/assets/images/book3.png'
+
+const showForm = ref(false)
+
+const newBook = ref({
+  title: '',
+  description: '',
+  genres: [],
+  img: '',
+  isAdult: false,
+  stars: 0
+})
+
+const errors = ref({
+  title: '',
+  genres: ''
+})
+
+const hasErrors = computed(() => {
+  return errors.value.title || errors.value.genres
+})
+
+const addBook = () => {
+  errors.value = { title: '', genres: '' }
+
+  if (!newBook.value.title.trim()) {
+    errors.value.title = 'Введите название книги'
+    return
+  }
+
+  if (newBook.value.genres.length === 0) {
+    errors.value.genres = 'Выберите хотя бы один жанр'
+    return
+  }
+
+  books.value.push({
+    id: books.value.length + 1,
+    title: newBook.value.title,
+    description: newBook.value.description,
+    genres: [...newBook.value.genres],
+    img: newBook.value.img,
+    isAdult: newBook.value.isAdult,
+    stars: 0
+  })
+
+  newBook.value = {
+    title: '',
+    description: '',
+    genres: [],
+    img: '',
+    isAdult: false,
+    stars: 0
+  }
+
+  showForm.value = false
+}
 
 const books = ref([
   {
     id: 1,
     title: 'Мастер и Маргарита',
     description: '«Мастер и Маргарита» — роман Михаила Афанасьевича Булгакова, работа над которым началась, по одним данным, в 1928 году, по другим — в 1929-м, и продолжалась вплоть до смерти писателя в марте 1940 года.',
-    genre: 'Роман',
+    genres: ['Роман'],
     img: bookImg1,
     isAdult: false,
     stars: 0
@@ -64,7 +156,7 @@ const books = ref([
     id: 2,
     title: 'Бэтман Аполло',
     description: 'Главный герой — Рама, сравнительно недавно ставший вампиром. Ему предстоит разобраться в вампирском мироздании и подняться по иерархической лестнице, став Кавалером Ночи и ныряльщиком.',
-    genre: 'Роман',
+    genres: ['Роман'],
     img: bookImg2,
     isAdult: true,
     stars: 0
@@ -73,7 +165,7 @@ const books = ref([
     id: 3,
     title: 'Стратегическое управление на основе маркетингового анализа. Инструменты, проблемы, ситуации',
     description: 'Книга в которой автор описывает классические и собственные инструменты стратегического управления и маркетингового анализа.',
-    genre: 'бизнес-книга',
+    genres: ['бизнес-книга'],
     img: bookImg3,
     isAdult: false,
     stars: 0
@@ -115,6 +207,20 @@ const setStars = (book, stars) => {
   margin: 0;
   color: #657786;
   font-size: 14px;
+}
+
+select[multiple] {
+  height: 100px;
+}
+
+.form input,
+.form textarea,
+.form select {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
 .booksContainer {
@@ -161,26 +267,21 @@ const setStars = (book, stars) => {
   flex-grow: 1;
 }
 
-.cardItem_info span {
+.cardItem_info>span {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
   color: #657786;
 }
 
-.cardItem_info span b {
-  background: #1da1f2;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 2px;
-  font-size: 12px;
-  margin-left: 8px;
+.cardItem_info span span {
+  display: inline !important;
+  color: #1da1f2;
 }
 
-.cardItem_info span:last-child {
-  color: #ffad1f;
-  font-weight: 600;
-  margin-bottom: 0;
+.cardItem_info span span:not(:last-child)::after {
+  content: ', ';
+  color: #657786;
 }
 
 .cardItem_img {
@@ -297,5 +398,92 @@ const setStars = (book, stars) => {
 
 .big-rating-star.no-rating .star-value {
   color: #666;
+}
+
+.header button {
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 450px;
+}
+
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.form-buttons button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-buttons button:first-child {
+  background: #1da1f2;
+  color: white;
+}
+
+.form-buttons button:last-child {
+  background: #ddd;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.errors-block {
+  background: #fee;
+  border: 1px solid #e0245e;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 16px 0;
+}
+
+.errors-block p {
+  color: #e0245e;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.errors-block p:first-child {
+  margin-top: 0;
+}
+
+.errors-block p:last-child {
+  margin-bottom: 0;
 }
 </style>
