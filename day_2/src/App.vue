@@ -64,157 +64,120 @@ const books = ref([
 <style scoped>
 .app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #b5d622 0%, #e57030 100%);
-  padding: 20px;
+  background: #f5f8fa;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid #e1e8ed;
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1da1f2;
+}
+
+.header p {
+  margin: 0;
+  color: #657786;
+  font-size: 14px;
 }
 
 .booksContainer {
-  box-sizing: border-box;
-  width: 90%;
-  max-width: 1400px;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 40px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
-  padding: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 24px;
-  margin: 20px auto;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  gap: 24px;
 }
 
 .cardItem {
+  background: white;
+  border: 1px solid #e1e8ed;
+  border-radius: 4px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 20px;
-  overflow: hidden;
-  background: white;
-  padding: 25px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.cardItem:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  border-color: #764ba2;
 }
 
 .cardItem_info {
+  padding: 20px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
 }
 
 .cardItem_info h3 {
-  margin: 0;
-  font-size: 1.4em;
+  margin: 0 0 12px 0;
+  font-size: 18px;
   font-weight: 700;
-  color: #2d3748;
+  color: #14171a;
   line-height: 1.3;
-  min-height: 3.6em;
-  display: -webkit-box;
   overflow: hidden;
+  min-height: 46px;
 }
 
 .cardItem_info p {
-  margin: 0;
-  color: #4a5568;
-  line-height: 1.6;
-  font-size: 0.95em;
-  display: -webkit-box;
+  margin: 0 0 16px 0;
+  color: #657786;
+  font-size: 14px;
+  line-height: 1.5;
   overflow: hidden;
   flex-grow: 1;
 }
 
-.cardItem_info>span {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-top: 1px solid #f0f0f0;
-  color: #718096;
-  font-size: 0.9em;
+.cardItem_info span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #657786;
 }
 
-.cardItem_info>span:first-of-type {
-  border-top: none;
-}
-
-.cardItem_info>span b {
-  background: #ff4757;
+.cardItem_info span b {
+  background: #1da1f2;
   color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8em;
-  font-weight: 600;
-  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 12px;
+  margin-left: 8px;
 }
 
-.cardItem_info>span:last-child {
-  color: #f6b93b;
+.cardItem_info span:last-child {
+  color: #ffad1f;
   font-weight: 600;
-  font-size: 1em;
+  margin-bottom: 0;
 }
 
 .cardItem_img {
+  height: 280px;
+  background: #f5f8fa;
+  border-bottom: 1px solid #e1e8ed;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 220px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-}
-
-.cardItem_img::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  padding: 20px;
 }
 
 .cardItem_img img {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.cardItem:hover .cardItem_img img {
-  transform: scale(1.05);
+  width: 190px;
+  height: 270px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .cardItem_info span svg {
-  color: #f6b93b;
-  margin-left: 5px;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 40px;
-  padding: 30px 20px;
-}
-
-.header h1 {
-  color: white;
-  font-size: 2.5em;
-  margin: 0 0 10px 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.header p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1em;
-  margin: 0;
+  color: #ffad1f;
+  margin-left: 4px;
 }
 </style>
