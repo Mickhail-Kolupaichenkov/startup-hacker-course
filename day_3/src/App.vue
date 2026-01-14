@@ -1,10 +1,18 @@
 <template>
   <div class="app">
     <div class="header">
-      <h1>📖 Моя коллекция книг</h1>
-      <button class="add-btn" @click="showForm = true">
-        <span>+</span> Добавить книгу
-      </button>
+      <div>
+        <h1>📖 Моя коллекция книг</h1>
+        <p>Здесь собраны мои любимые произведения</p>
+      </div>
+      <div class="header-actions">
+        <button @click="resetAllStars" class="reset-btn">
+          Сбросить рейтинги
+        </button>
+        <button class="add-btn" @click="showForm = true">
+          Добавить книгу
+        </button>
+      </div>
     </div>
 
     <div v-if="showForm" class="form-overlay">
@@ -24,7 +32,6 @@
             <option value="Детектив">Детектив</option>
           </select>
 
-
           <div class="checkbox">
             <input type="checkbox" id="adult" v-model="newBook.isAdult">
             <label for="adult">18+</label>
@@ -40,6 +47,21 @@
             <button type="button" @click="cancelForm">Отменить</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <div class="stats" v-if="books.length > 0">
+      <div class="stat-item">
+        <span class="stat-label">Всего книг:</span>
+        <span class="stat-value">{{ totalBooks }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Средний рейтинг:</span>
+        <span class="stat-value">{{ averageRating.toFixed(2) }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Макс. рейтинг:</span>
+        <span class="stat-value">{{ maxRating }}/5</span>
       </div>
     </div>
 
@@ -95,6 +117,21 @@ import bookImg3 from '@/assets/images/book3.png'
 const editingBookId = ref(null)
 const showForm = ref(false)
 
+const totalBooks = computed(() => books.value.length)
+
+const averageRating = computed(() => {
+  if (books.value.length === 0) return 0
+
+  const sum = books.value.reduce((total, book) => total + book.stars, 0)
+  return sum / books.value.length
+})
+
+const maxRating = computed(() => {
+  if (books.value.length === 0) return 0
+
+  return Math.max(...books.value.map(book => book.stars))
+})
+
 const newBook = ref({
   title: '',
   description: '',
@@ -142,6 +179,16 @@ const books = ref([
     stars: 0
   }
 ])
+
+const resetAllStars = () => {
+  if (books.value.length === 0) return
+
+  if (confirm('Сбросить рейтинги всех книг?')) {
+    books.value.forEach(book => {
+      book.stars = 0
+    })
+  }
+}
 
 const editBook = (book) => {
   editingBookId.value = book.id
@@ -461,6 +508,7 @@ select[multiple] {
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 15px;
 }
 
 .form-overlay {
@@ -569,5 +617,55 @@ select[multiple] {
   font-size: 14px;
   cursor: pointer;
   flex: 1;
+}
+
+.stats {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 40px;
+  display: flex;
+  gap: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #657786;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1da1f2;
+}
+
+.reset-btn {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.reset-btn:hover {
+  background: #f57c00;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
 }
 </style>
