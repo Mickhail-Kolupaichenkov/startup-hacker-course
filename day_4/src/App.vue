@@ -15,14 +15,15 @@
       </div>
     </div>
 
-    <div v-if="showForm" class="form-overlay">
-      <div class="form">
-        <h3>{{ editingBookId ? 'Редактировать книгу' : 'Новая книга' }}</h3>
-        <BookForm :modelValue="newBook" :errors="errors" :submitText="editingBookId ? 'Сохранить' : 'Добавить'"
-          @update:modelValue="newBook = $event" @submit="editingBookId ? updateBook() : addBook()"
-          @cancel="cancelForm" />
-      </div>
-    </div>
+    <Dialog v-if="showForm" :show="showForm" @close="cancelForm">
+      <template #title>
+        <h3 style="color: #1da1f2;">
+          {{ editingBookId ? 'Редактировать книгу' : 'Новая книга' }}
+        </h3>
+      </template>
+      <BookForm :modelValue="newBook" :errors="errors" :submitText="editingBookId ? 'Сохранить' : 'Добавить'"
+        @update:modelValue="newBook = $event" @submit="editingBookId ? updateBook() : addBook()" @cancel="cancelForm" />
+    </Dialog>
 
     <div class="stats" v-if="books.length > 0">
       <div class="stat-item">
@@ -55,6 +56,7 @@ import bookImg2 from '@/assets/images/book2.png'
 import bookImg3 from '@/assets/images/book3.png'
 import BookCard from './BookCard.vue'
 import BookForm from './BookForm.vue'
+import Dialog from './Dialog.vue'
 
 const editingBookId = ref(null)
 const showForm = ref(false)
@@ -259,16 +261,6 @@ const updateStars = (bookId, newStars) => {
   font-size: 14px;
 }
 
-.form input,
-.form textarea,
-.form select {
-  width: 100%;
-  margin: 8px 0;
-  padding: 8px;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-}
-
 .booksContainer {
   max-width: 1200px;
   margin: 30px auto;
@@ -277,8 +269,6 @@ const updateStars = (bookId, newStars) => {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
 }
-
-
 
 .header button {
   background: #1da1f2;
@@ -289,29 +279,6 @@ const updateStars = (bookId, newStars) => {
   cursor: pointer;
   margin-right: 15px;
 }
-
-.form-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.form {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  min-width: 450px;
-}
-
-
-
 
 .stats {
   max-width: 1200px;
