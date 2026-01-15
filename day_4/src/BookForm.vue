@@ -11,8 +11,11 @@
             <option value="Роман">Роман</option>
             <option value="Фантастика">Фантастика</option>
             <option value="Детектив">Детектив</option>
-            <option value="Бизнес-книга">Бизнес книга</option>
+            <option value="Бизнес-книга">Бизнес-книга</option>
+            <option value="Техническая-литература">Техническая-литература</option>
         </select>
+
+        <span>Зажмите Ctrl для выбора нескольких жанров</span>
 
         <div class="checkbox">
             <input type="checkbox" id="adult" v-model="formData.isAdult">

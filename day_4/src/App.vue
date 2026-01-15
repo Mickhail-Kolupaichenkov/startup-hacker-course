@@ -54,6 +54,9 @@ import { ref, computed } from 'vue'
 import bookImg1 from '@/assets/images/book1.png'
 import bookImg2 from '@/assets/images/book2.png'
 import bookImg3 from '@/assets/images/book3.png'
+import bookImg4 from '@/assets/images/book4.png'
+import bookImg5 from '@/assets/images/book5.png'
+import bookImg6 from '@/assets/images/book6.png'
 import BookCard from './BookCard.vue'
 import BookForm from './BookForm.vue'
 import Dialog from './Dialog.vue'
@@ -95,6 +98,33 @@ const books = ref([
     description: 'Книга в которой автор описывает классические и собственные инструменты стратегического управления и маркетингового анализа.',
     genres: ['Бизнес-книга'],
     img: bookImg3,
+    isAdult: false,
+    stars: 0
+  },
+  {
+    id: 4,
+    title: 'Чистый код: создание, анализ и рефакторинг. Библиотека программиста',
+    description: 'Даже плохой программный код может работать. Однако если код не является «чистым», это всегда будет мешать развитию проекта и компании-разработчика, отнимая значительные ресурсы на его поддержку и «укрощение».',
+    genres: ['Техническая-литература'],
+    img: bookImg4,
+    isAdult: true,
+    stars: 0
+  },
+  {
+    id: 5,
+    title: 'Копирайтинг: как не съесть собаку. Создаем тексты, которые продают',
+    description: 'Эта книга - набор методик, приемов и секретов по написанию продающих текстов (текстов для сайтов, полиграфии, коммерческих предложений и других рекламных целей).',
+    genres: ['Бизнес-книга'],
+    img: bookImg5,
+    isAdult: false,
+    stars: 0
+  }
+  , {
+    id: 6,
+    title: 'Магия утра. Как первый час дня определяет ваш успех',
+    description: 'Книга, которая помогла тысячам людей изменить жизнь за счет правильного начала дня и утренних ритуалов.',
+    genres: ['Бизнес-книга'],
+    img: bookImg6,
     isAdult: false,
     stars: 0
   }
