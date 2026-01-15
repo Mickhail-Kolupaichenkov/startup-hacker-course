@@ -39,15 +39,17 @@
 </template>
 
 <script setup>
+//Встроенные функции и пропсы
 import { computed } from 'vue'
 const props = defineProps({
     book: Object
 })
 
 const rated = computed(() => props.book.stars >= 1)
-
+//Emits
 const emit = defineEmits(['edit', 'delete', 'update:stars'])
 
+//Emit для обновления рейтинга
 const setStars = (stars) => {
     emit('update:stars', stars)
 }

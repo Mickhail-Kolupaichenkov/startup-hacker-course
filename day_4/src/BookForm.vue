@@ -35,15 +35,18 @@
 </template>
 
 <script setup>
+//Встроенные функции
 import { computed } from 'vue'
-
+//Props
 const props = defineProps({
     modelValue: Object,
     errors: Object,
     submitText: String
 })
+//Emits
 const emit = defineEmits(['update:modelValue', 'submit', 'cancel'])
 
+// Двустороннее связывание данных формы
 const formData = computed({
     get() {
         return props.modelValue
@@ -104,6 +107,7 @@ select[multiple] {
     margin: 0;
 }
 
+/*Стили ошибок */
 .errors-block {
     background: #fee;
     border: 1px solid #e0245e;

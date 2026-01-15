@@ -49,30 +49,32 @@
 </template>
 
 <script setup>
-
+//Встроенные функции
 import { ref, computed } from 'vue'
+//Импорты картинок
 import bookImg1 from '@/assets/images/book1.png'
 import bookImg2 from '@/assets/images/book2.png'
 import bookImg3 from '@/assets/images/book3.png'
 import bookImg4 from '@/assets/images/book4.png'
 import bookImg5 from '@/assets/images/book5.png'
 import bookImg6 from '@/assets/images/book6.png'
+//Импорт компонентов
 import BookCard from './BookCard.vue'
 import BookForm from './BookForm.vue'
 import Dialog from './Dialog.vue'
-
+//Состояние
 const editingBookId = ref(null)
 const showForm = ref(false)
-
 const totalBooks = computed(() => books.value.length)
 
-
+//Удаление книги
 const deleteBook = (id) => {
   if (confirm('Вы уверены, что хотите удалить эту книгу?')) {
     books.value = books.value.filter(book => book.id !== id)
   }
 }
 
+//Data книг
 const books = ref([
   {
     id: 1,
@@ -130,6 +132,7 @@ const books = ref([
   }
 ])
 
+//Средний рейтинг
 const averageRating = computed(() => {
   if (books.value.length === 0) return 0
 
@@ -137,12 +140,14 @@ const averageRating = computed(() => {
   return sum / books.value.length
 })
 
+//Максимальный рейтинг
 const maxRating = computed(() => {
   if (books.value.length === 0) return 0
 
   return Math.max(...books.value.map(book => book.stars))
 })
 
+//Состояние для новой книги
 const newBook = ref({
   title: '',
   description: '',
@@ -152,17 +157,18 @@ const newBook = ref({
   stars: 0
 })
 
+//Состояние для ошибок
 const errors = ref({
   title: '',
   genres: ''
 })
 
+//Динамическое получение ошибок
 const hasErrors = computed(() => {
   return errors.value.title || errors.value.genres
 })
 
-
-
+//Сброс рейтингов
 const resetAllStars = () => {
   if (books.value.length === 0) return
 
@@ -173,6 +179,7 @@ const resetAllStars = () => {
   }
 }
 
+//Редактирование книги
 const editBook = (book) => {
   editingBookId.value = book.id
   newBook.value = {
@@ -186,6 +193,7 @@ const editBook = (book) => {
   showForm.value = true
 }
 
+//Валидация формы
 const validateForm = () => {
   errors.value = { title: '', genres: '' }
 
@@ -202,6 +210,7 @@ const validateForm = () => {
   return true
 }
 
+//Добавление книги с валидацией
 const addBook = () => {
   if (!validateForm()) return
 
@@ -218,6 +227,7 @@ const addBook = () => {
   cancelForm()
 }
 
+//Обновление данных книги с валидацией
 const updateBook = () => {
   if (!validateForm()) return
 
@@ -236,6 +246,7 @@ const updateBook = () => {
   cancelForm()
 }
 
+//Закрытие формы и сброс значений
 const cancelForm = () => {
   newBook.value = {
     title: '',
@@ -250,13 +261,13 @@ const cancelForm = () => {
   showForm.value = false
 }
 
+//Обновление звезд в рейтинге
 const updateStars = (bookId, newStars) => {
   const book = books.value.find(b => b.id === bookId)
   if (book) {
     book.stars = newStars
   }
 }
-
 </script>
 
 <style scoped>
@@ -266,6 +277,7 @@ const updateStars = (bookId, newStars) => {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+/*Стили для header*/
 .header {
   background: white;
   border-bottom: 1px solid #e1e8ed;
@@ -291,15 +303,6 @@ const updateStars = (bookId, newStars) => {
   font-size: 14px;
 }
 
-.booksContainer {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-}
-
 .header button {
   background: #1da1f2;
   color: white;
@@ -310,6 +313,17 @@ const updateStars = (bookId, newStars) => {
   margin-right: 15px;
 }
 
+/*Стили для booksContainer*/
+.booksContainer {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+/*Стили для блока статистики*/
 .stats {
   max-width: 1200px;
   margin: 20px auto;
