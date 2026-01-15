@@ -18,7 +18,9 @@
     <div v-if="showForm" class="form-overlay">
       <div class="form">
         <h3>{{ editingBookId ? 'Редактировать книгу' : 'Новая книга' }}</h3>
-        <!--formbook-->
+        <BookForm :modelValue="newBook" :errors="errors" :submitText="editingBookId ? 'Сохранить' : 'Добавить'"
+          @update:modelValue="newBook = $event" @submit="editingBookId ? updateBook() : addBook()"
+          @cancel="cancelForm" />
       </div>
     </div>
 
@@ -52,6 +54,7 @@ import bookImg1 from '@/assets/images/book1.png'
 import bookImg2 from '@/assets/images/book2.png'
 import bookImg3 from '@/assets/images/book3.png'
 import BookCard from './BookCard.vue'
+import BookForm from './BookForm.vue'
 
 const editingBookId = ref(null)
 const showForm = ref(false)
@@ -256,10 +259,6 @@ const updateStars = (bookId, newStars) => {
   font-size: 14px;
 }
 
-select[multiple] {
-  height: 100px;
-}
-
 .form input,
 .form textarea,
 .form select {
@@ -312,62 +311,7 @@ select[multiple] {
 }
 
 
-.form-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-}
 
-.form-buttons button {
-  flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.form-buttons button:first-child {
-  background: #1da1f2;
-  color: white;
-}
-
-.form-buttons button:last-child {
-  background: #ddd;
-}
-
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
-}
-
-.checkbox input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-}
-
-.errors-block {
-  background: #fee;
-  border: 1px solid #e0245e;
-  border-radius: 4px;
-  padding: 10px;
-  margin: 16px 0;
-}
-
-.errors-block p {
-  color: #e0245e;
-  margin: 4px 0;
-  font-size: 12px;
-}
-
-.errors-block p:first-child {
-  margin-top: 0;
-}
-
-.errors-block p:last-child {
-  margin-bottom: 0;
-}
 
 .stats {
   max-width: 1200px;
