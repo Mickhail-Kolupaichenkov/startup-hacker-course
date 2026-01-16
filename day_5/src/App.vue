@@ -83,7 +83,7 @@ const books = ref([
     genres: ['Роман'],
     img: bookImg1,
     isAdult: false,
-    stars: 0
+    stars: 5
   },
   {
     id: 2,
@@ -92,7 +92,7 @@ const books = ref([
     genres: ['Роман'],
     img: bookImg2,
     isAdult: true,
-    stars: 0
+    stars: 4
   },
   {
     id: 3,
@@ -110,7 +110,7 @@ const books = ref([
     genres: ['Техническая-литература'],
     img: bookImg4,
     isAdult: true,
-    stars: 0
+    stars: 3
   },
   {
     id: 5,
