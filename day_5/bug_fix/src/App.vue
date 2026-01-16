@@ -1,28 +1,28 @@
 <template>
-<div class="app">
-    <Dialog v-if="showBookForm" :title="currentBook?.id ? 'Редактировать книгу' : 'Добавить книгу'" @close="hideForm()">
-        <BookForm v-if="showBookForm" :modelValue="currentBook"
-        @update:modelValue="saveBook" @cancel="hideForm" />
-    </Dialog>
-    <div class="book-actions-list-wrapper">
-        <div class="book-actions-list-info">
-            <span>Кол-во книг: {{ totalBooks }}</span>
-            <span> / </span>
-            <span>Средний рейтинг: {{ averageRating }}</span>
+    <div class="app">
+        <Dialog v-if="showBookForm" :title="currentBook?.id ? 'Редактировать книгу' : 'Добавить книгу'"
+            @close="hideForm()">
+            <BookForm v-if="showBookForm" :modelValue="currentBook" @update:modelValue="saveBook" @cancel="hideForm" />
+        </Dialog>
+        <div class="book-actions-list-wrapper">
+            <div class="book-actions-list-info">
+                <span>Кол-во книг: {{ totalBooks }}</span>
+                <span> / </span>
+                <span>Средний рейтинг: {{ averageRating }}</span>
+            </div>
+            <div class="book-actions-list-actions">
+                <button @click="removeRatings">Сбросить рейтинг</button>
+                <button :class="{ 'button-primary': !showBookForm, 'button-disabled': showBookForm }" @click="showForm"
+                    :disabled="showBookForm">
+                    Добавить книгу
+                </button>
+            </div>
         </div>
-        <div class="book-actions-list-actions">
-            <button @click="removeRatings">Сбросить рейтинг</button>
-            <button :class="{ 'button-primary': !showBookForm, 'button-disabled': showBookForm }"
-                @click="showForm" :disabled="showBookForm" >
-                Добавить книгу
-            </button>
+        <div class="book-list">
+            <BookCard v-for="book in books" :key="book.id" :book="book" v-bind:update:rating="updateRating"
+                @edit="editBook" @remove="removeBook" />
         </div>
     </div>
-    <div class="book-list">
-        <BookCard v-for="book in books" :key="book.id" :book="book"
-            v-bind:update:rating="updateRating" @edit="editBook" @remove="removeBook" />
-    </div>
-</div>
 </template>
 
 <script setup>
@@ -37,14 +37,14 @@ const books = ref(items);
 const currentBook = ref();
 function updateRating(id, rating) {
     books.value = books.value.map((book) => {
-    if (book.id === id) {
-        book.rating = rating;
-    }
-    return book;
+        if (book.id === id) {
+            book.rating = rating;
+        }
+        return book;
     });
 }
 function removeBook(id) {
-    books.value.filter((book) => book.id !== id);
+    books.value = books.value.filter((book) => book.id !== id);
 }
 function editBook(id) {
     currentBook.value = books.value.find((book) => book.id === id);
@@ -61,11 +61,11 @@ function saveBook(data) {
 
 function updateBook(data) {
     books.value = books.value.map((m) => {
-    if (m.id === data.id) {
-        data.rating = m.rating;
+        if (m.id === data.id) {
+            data.rating = m.rating;
+            return data;
+        }
         return data;
-    }
-    return data;
     });
     hideForm();
 }
@@ -109,9 +109,11 @@ function removeRatings() {
             &-wrapper {
                 margin-bottom: 20px;
             }
+
             &-info {
                 margin-bottom: 20px;
             }
+
             &-actions {
                 display: flex;
                 gap: 20px;
