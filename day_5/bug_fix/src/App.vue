@@ -20,7 +20,7 @@
         </div>
         <div class="book-list">
             <BookCard v-for="book in books" :key="book.id" :book="book" v-bind:update:rating="updateRating"
-                @edit="editBook" @remove="removeBook" />
+                @edit="editBook" @remove="removeBook" @update:rating="updateRating" />
         </div>
     </div>
 </template>
