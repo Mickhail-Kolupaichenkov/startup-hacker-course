@@ -64,41 +64,35 @@ defineEmits(['close'])
 }
 
 /* Анимация для всего overlay */
-.fade-slide-enter-active {
-    animation: fadeIn 0.4s ease;
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+    opacity: 0;
 }
 
+.fade-slide-enter-from .form,
+.fade-slide-leave-to .form {
+    transform: translateY(50px);
+    opacity: 0;
+}
+
+.fade-slide-enter-active,
 .fade-slide-leave-active {
-    animation: fadeIn 0.3s ease reverse;
+    transition: opacity 0.4s ease;
 }
 
-.fade-slide-enter-active .form {
-    animation: slideUp 0.4s ease;
-}
-
+.fade-slide-enter-active .form,
 .fade-slide-leave-active .form {
-    animation: slideUp 0.3s ease reverse;
+    transition: all 0.4s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+.fade-slide-enter-to,
+.fade-slide-leave-from {
+    opacity: 1;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.fade-slide-enter-to .form,
+.fade-slide-leave-from .form {
+    transform: translateY(0);
+    opacity: 1;
 }
 </style>
