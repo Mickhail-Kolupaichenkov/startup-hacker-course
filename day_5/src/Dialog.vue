@@ -1,17 +1,19 @@
 <template>
-    <div v-if="show" class="form-overlay" @click.self="$emit('close')">
-        <div class="form">
-            <div class="form-title">
-                <div>
-                    <slot name="title">
-                        <h3>{{ title }}</h3>
-                    </slot>
+    <Transition name="fade-slide" appear>
+        <div v-if="show" :key="show" class="form-overlay" @click.self="$emit('close')">
+            <div class="form">
+                <div class="form-title">
+                    <div>
+                        <slot name="title">
+                            <h3>Диалоговое окно</h3>
+                        </slot>
+                    </div>
+                    <div><button class="close-btn" @click="$emit('close')">Х</button></div>
                 </div>
-                <div><button class="close-btn" @click="$emit('close')">Х</button></div>
+                <slot></slot>
             </div>
-            <slot></slot>
         </div>
-    </div>
+    </Transition>
 </template>
 
 <script setup>
@@ -44,6 +46,7 @@ defineEmits(['close'])
     padding: 20px;
     border-radius: 8px;
     min-width: 450px;
+    transform: translateY(0);
 }
 
 .close-btn {
@@ -58,5 +61,44 @@ defineEmits(['close'])
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+/* Анимация для всего overlay */
+.fade-slide-enter-active {
+    animation: fadeIn 0.4s ease;
+}
+
+.fade-slide-leave-active {
+    animation: fadeIn 0.3s ease reverse;
+}
+
+.fade-slide-enter-active .form {
+    animation: slideUp 0.4s ease;
+}
+
+.fade-slide-leave-active .form {
+    animation: slideUp 0.3s ease reverse;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
