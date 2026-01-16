@@ -62,10 +62,9 @@ function saveBook(data) {
 function updateBook(data) {
     books.value = books.value.map((m) => {
         if (m.id === data.id) {
-            data.rating = m.rating;
-            return data;
+            return { ...m, ...data };
         }
-        return data;
+        return m;
     });
     hideForm();
 }
