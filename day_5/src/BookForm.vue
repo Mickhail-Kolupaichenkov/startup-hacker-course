@@ -49,7 +49,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'submit', 'cancel'])
 
 const titleInput = useTemplateRef('titleInput')
-
+//Фокус на ref ссылку на input title
 onMounted(() => {
     titleInput.value?.focus()
 })
@@ -64,6 +64,7 @@ const formData = computed({
     }
 })
 
+//Вывод в консоль по прекращению ввода названия
 watch(
     () => formData.value.title,
     debounce((newTitle) => {
