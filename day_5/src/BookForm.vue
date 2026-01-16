@@ -1,6 +1,6 @@
 <template>
     <form @submit.prevent="$emit('submit')">
-        <input placeholder="Название" v-model="formData.title">
+        <input placeholder="Название" v-model="formData.title" ref="titleInput">
 
         <textarea placeholder="Описание" v-model="formData.description"></textarea>
 
@@ -36,7 +36,9 @@
 
 <script setup>
 //Встроенные функции
-import { computed } from 'vue'
+import { computed, onMounted, watch } from 'vue'
+import { useTemplateRef } from 'vue'
+import { debounce } from 'lodash-es'
 //Props
 const props = defineProps({
     modelValue: Object,
@@ -45,6 +47,12 @@ const props = defineProps({
 })
 //Emits
 const emit = defineEmits(['update:modelValue', 'submit', 'cancel'])
+
+const titleInput = useTemplateRef('titleInput')
+
+onMounted(() => {
+    titleInput.value?.focus()
+})
 
 // Двустороннее связывание данных формы
 const formData = computed({
@@ -55,6 +63,15 @@ const formData = computed({
         emit('update:modelValue', value)
     }
 })
+
+watch(
+    () => formData.value.title,
+    debounce((newTitle) => {
+        if (newTitle && newTitle.trim().length > 0) {
+            console.log(`Отправили "${newTitle}" на сервер`)
+        }
+    }, 500)
+)
 </script>
 
 <style scoped>
