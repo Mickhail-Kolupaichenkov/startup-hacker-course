@@ -3,11 +3,11 @@
         <div class="cardItem_info">
             <h3>{{ book.title }}</h3>
             <p>{{ book.description }}</p>
-            <span>Жанр:
-                <span class="genre-tag">
+            <span style="display: flex; gap: 10px;">Жанр:
+                <STag color="primary-lightest">
                     {{ displayGenre }}
-                </span>
-                <b v-if="book.isAdult">18+</b>
+                </STag>
+                <STag v-if="book.isAdult" color="red">18+</STag>
             </span>
             <div class="rating-stars">
                 <span>Рейтинг: </span>
@@ -27,7 +27,9 @@
                 </span>
                 <FontAwesomeIcon icon="star" class="star-icon" />
             </div>
-            <img :src="book.img" :alt="book.title" width="200">
+            <div class="preview-wrapper">
+                <SImagePreview :src="book.img" :alt="book.title" />
+            </div>
         </div>
 
         <div class="book-actions">
@@ -39,7 +41,7 @@
 </template>
 
 <script setup>
-import { SButton } from 'startup-ui';
+import { SButton, SImagePreview, STag } from 'startup-ui';
 //Встроенные функции и пропсы
 import { computed } from 'vue'
 const props = defineProps({
@@ -69,7 +71,7 @@ const displayGenre = computed(() => {
 })
 </script>
 
-<style scoped>
+<style>
 .cardItem {
     background: white;
     border: 1px solid #e1e8ed;
@@ -131,13 +133,27 @@ const displayGenre = computed(() => {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    overflow: hidden;
 }
 
-.cardItem_img img {
+.preview-wrapper {
     width: 190px;
     height: 270px;
-    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+
+.preview-wrapper .s-imagepreview img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: block !important;
 }
 
 .rating-stars {

@@ -31,21 +31,10 @@
         @submit="editingBookId ? updateBook() : addBook()" @cancel="cancelForm" />
     </SDialog>
 
-    <div v-if="$route.path === '/'">
-      <div class="stats" v-if="books.length > 0">
-        <div class="stat-item">
-          <span class="stat-label">Всего книг:</span>
-          <span class="stat-value">{{ totalBooks }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Средний рейтинг:</span>
-          <span class="stat-value">{{ averageRating.toFixed(2) }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Макс. рейтинг:</span>
-          <span class="stat-value">{{ maxRating }}/5</span>
-        </div>
-      </div>
+    <div v-if="$route.path === '/'" class="stat-block">
+      <SStat title="Всего книг:">{{ totalBooks }}</SStat>
+      <SStat title="Средний рейтинг:">{{ averageRating.toFixed(2) }}</SStat>
+      <SStat title="Макс. рейтинг:">{{ maxRating }}/5</SStat>
     </div>
 
     <RouterView :books="books" @edit-book="editBook" @delete-book="deleteBook" @update-stars="updateStars" />
@@ -57,8 +46,7 @@
 
 //Встроенные функции
 import { ref, computed } from 'vue'
-import { SButton, SDialog } from 'startup-ui';
-
+import { SButton, SDialog, SConfirm, SAlert, SHorizontalMenu, SStat } from 'startup-ui';
 
 
 //Импорты картинок
@@ -79,9 +67,17 @@ const totalBooks = computed(() => books.value.length)
 
 //Удаление книги
 const deleteBook = (id) => {
-  if (confirm('Вы уверены, что хотите удалить эту книгу?')) {
-    books.value = books.value.filter(book => book.id !== id)
-  }
+  SConfirm.open(`Вы уверены, что хотите удалить книгу?`, {
+    title: 'Подтверждение удаления',
+    type: 'danger',
+    acceptText: 'Удалить',
+    cancelText: 'Отмена',
+
+    onAccept: () => {
+      books.value = books.value.filter(book => book.id !== id);
+      SAlert.success(`Книга удалена`);
+    }
+  });
 }
 
 //Data книг
@@ -182,11 +178,19 @@ const hasErrors = computed(() => {
 const resetAllStars = () => {
   if (books.value.length === 0) return
 
-  if (confirm('Сбросить рейтинги всех книг?')) {
-    books.value.forEach(book => {
-      book.stars = 0
-    })
-  }
+  SConfirm.open('Вы действительно хотите сбросить рейтинги всех книг?', {
+    title: 'Подтверждение сброса',
+    type: 'warning',
+    acceptText: 'Сбросить',
+    cancelText: 'Отмена',
+
+    onAccept: () => {
+      books.value.forEach(book => {
+        book.stars = 0
+      })
+      SAlert.success('Рейтинги всех книг сброшены!')
+    }
+  })
 }
 
 //Редактирование книги
@@ -318,8 +322,21 @@ const updateStars = (bookId, newStars) => {
   border-top: 1px solid #e1e8ed;
 }
 
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px auto;
+  max-width: 260px;
+  padding: 30px 30px 10px 30px;
+  background-color: #FFFFFF;
+  border: 1px solid #E1E8ED;
+  color: #F04F0A;
+}
+
 .nav-link {
   text-decoration: none;
+  background-color: #F04F0A;
   color: #657786;
   font-weight: 500;
   padding: 8px 16px;
