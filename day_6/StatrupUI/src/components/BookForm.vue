@@ -1,6 +1,5 @@
 <template>
     <SForm v-model="formData" @submit="$emit('submit')" :errors="errors">
-
         <SInput v-model="formData.title" placeholder="Введите название книги" :error="errors.title" ref="titleInput" />
 
         <SInput v-model="formData.description" type="textarea" placeholder="Описание" />

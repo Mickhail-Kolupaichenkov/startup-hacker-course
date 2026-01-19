@@ -24,15 +24,12 @@
 
     </header>
 
-    <Dialog v-if="showForm" :show="showForm" @close="cancelForm">
-      <template #title>
-        <h3 style="color: #1da1f2;">
-          {{ editingBookId ? 'Редактировать книгу' : 'Новая книга' }}
-        </h3>
-      </template>
-      <BookForm :modelValue="newBook" :errors="errors" :submitText="editingBookId ? 'Сохранить' : 'Добавить'"
-        @update:modelValue="newBook = $event" @submit="editingBookId ? updateBook() : addBook()" @cancel="cancelForm" />
-    </Dialog>
+    <SDialog v-if="showForm" v-model="showForm" :title="editingBookId ? 'Редактировать книгу' : 'Новая книга'"
+      width="700">
+      <BookForm style="width:700px" :modelValue="newBook" :errors="errors"
+        :submitText="editingBookId ? 'Сохранить' : 'Добавить'" @update:modelValue="newBook = $event"
+        @submit="editingBookId ? updateBook() : addBook()" @cancel="cancelForm" />
+    </SDialog>
 
     <div v-if="$route.path === '/'">
       <div class="stats" v-if="books.length > 0">
@@ -60,7 +57,7 @@
 
 //Встроенные функции
 import { ref, computed } from 'vue'
-import { SButton } from 'startup-ui';
+import { SButton, SDialog } from 'startup-ui';
 
 
 
@@ -425,5 +422,15 @@ const updateStars = (bookId, newStars) => {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #657786;
 }
 </style>
