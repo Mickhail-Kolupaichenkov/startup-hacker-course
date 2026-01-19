@@ -1,19 +1,31 @@
 <template>
   <div class="app">
-    <div class="header">
-      <div>
-        <h1>📖 Моя коллекция книг</h1>
-        <p>Здесь собраны мои любимые произведения</p>
+    <header class="header">
+      <div class="header-top">
+        <div>
+          <h1>📖 Моя коллекция книг</h1>
+          <p>Здесь собраны мои любимые произведения</p>
+        </div>
+        <div v-if="$route.path === '/'" class="header-actions">
+          <button @click="resetAllStars" class="reset-btn">
+            Сбросить рейтинги
+          </button>
+          <button class="add-btn" @click="showForm = true">
+            Добавить книгу
+          </button>
+        </div>
       </div>
-      <div class="header-actions">
-        <button @click="resetAllStars" class="reset-btn">
-          Сбросить рейтинги
-        </button>
-        <button class="add-btn" @click="showForm = true">
-          Добавить книгу
-        </button>
-      </div>
-    </div>
+
+      <nav class="header-nav">
+        <RouterLink to="/" class="nav-link" :class="{ active: $route.path === '/' }">
+          Все книги
+        </RouterLink>
+        <RouterLink to="/about" class="nav-link" :class="{ active: $route.path === '/about' }">
+          О нас
+        </RouterLink>
+      </nav>
+
+    </header>
 
     <Dialog v-if="showForm" :show="showForm" @close="cancelForm">
       <template #title>
@@ -25,25 +37,24 @@
         @update:modelValue="newBook = $event" @submit="editingBookId ? updateBook() : addBook()" @cancel="cancelForm" />
     </Dialog>
 
-    <div class="stats" v-if="books.length > 0">
-      <div class="stat-item">
-        <span class="stat-label">Всего книг:</span>
-        <span class="stat-value">{{ totalBooks }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Средний рейтинг:</span>
-        <span class="stat-value">{{ averageRating.toFixed(2) }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Макс. рейтинг:</span>
-        <span class="stat-value">{{ maxRating }}/5</span>
+    <div v-if="$route.path === '/'">
+      <div class="stats" v-if="books.length > 0">
+        <div class="stat-item">
+          <span class="stat-label">Всего книг:</span>
+          <span class="stat-value">{{ totalBooks }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Средний рейтинг:</span>
+          <span class="stat-value">{{ averageRating.toFixed(2) }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Макс. рейтинг:</span>
+          <span class="stat-value">{{ maxRating }}/5</span>
+        </div>
       </div>
     </div>
 
-    <div class="booksContainer">
-      <BookCard v-for="book in books" :book="book" @edit="editBook(book)" @delete="deleteBook(book.id)"
-        @update:stars="updateStars(book.id, $event)" />
-    </div>
+    <RouterView :books="books" @edit-book="editBook" @delete-book="deleteBook" @update-stars="updateStars" />
 
   </div>
 </template>
@@ -59,9 +70,9 @@ import bookImg4 from '@/assets/images/book4.png'
 import bookImg5 from '@/assets/images/book5.png'
 import bookImg6 from '@/assets/images/book6.png'
 //Импорт компонентов
-import BookCard from './BookCard.vue'
-import BookForm from './BookForm.vue'
-import Dialog from './Dialog.vue'
+import BookCard from './components/BookCard.vue'
+import BookForm from './components/BookForm.vue'
+import Dialog from './components/Dialog.vue'
 //Состояние
 const editingBookId = ref(null)
 const showForm = ref(false)
@@ -283,12 +294,51 @@ const updateStars = (bookId, newStars) => {
   border-bottom: 1px solid #e1e8ed;
   padding: 16px 40px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 100;
 }
+
+.header-top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.header-nav {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 10px 0;
+  border-top: 1px solid #e1e8ed;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #657786;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  background-color: #f5f8fa;
+  color: #1da1f2;
+}
+
+.nav-link.active {
+  color: #1da1f2;
+  background-color: #e8f4fe;
+}
+
 
 .header h1 {
   margin: 0;
