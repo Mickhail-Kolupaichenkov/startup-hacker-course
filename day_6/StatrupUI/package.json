@@ -9,7 +9,10 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@tinymce/tinymce-vue": "^6.3.0",
     "lodash-es": "^4.17.22",
+    "startup-ui": "^0.6.13",
+    "tinymce": "^8.3.2",
     "vue": "^3.5.8",
     "vue-router": "^4.6.4"
   },

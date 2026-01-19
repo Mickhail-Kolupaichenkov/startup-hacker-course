@@ -7,12 +7,9 @@
           <p>Здесь собраны мои любимые произведения</p>
         </div>
         <div v-if="$route.path === '/'" class="header-actions">
-          <button @click="resetAllStars" class="reset-btn">
-            Сбросить рейтинги
-          </button>
-          <button class="add-btn" @click="showForm = true">
-            Добавить книгу
-          </button>
+          <SButton outlined @click="resetAllStars">Сбросить рейтинги</SButton>
+
+          <SButton @click="showForm = true">Добавить книгу</SButton>
         </div>
       </div>
 
@@ -60,8 +57,13 @@
 </template>
 
 <script setup>
+
 //Встроенные функции
 import { ref, computed } from 'vue'
+import { SButton } from 'startup-ui';
+
+
+
 //Импорты картинок
 import bookImg1 from '@/assets/images/book1.png'
 import bookImg2 from '@/assets/images/book2.png'
@@ -421,6 +423,7 @@ const updateStars = (bookId, newStars) => {
 
 .header-actions {
   display: flex;
+  gap: 10px;
   align-items: center;
 }
 </style>

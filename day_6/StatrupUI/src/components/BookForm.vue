@@ -1,25 +1,18 @@
 <template>
-    <form @submit.prevent="$emit('submit')">
-        <input placeholder="Название" v-model="formData.title" ref="titleInput">
+    <SForm v-model="formData" @submit="$emit('submit')" :errors="errors">
 
-        <textarea placeholder="Описание" v-model="formData.description"></textarea>
+        <SInput v-model="formData.title" placeholder="Введите название книги" :error="errors.title" ref="titleInput" />
 
-        <input placeholder="URL обложки" v-model="formData.img">
+        <SInput v-model="formData.description" type="textarea" placeholder="Описание" />
+
+        <SInput v-model="formData.img" placeholder="URL обложки" />
 
         <label for="genres">Жанры:</label>
-        <select name="genres" v-model="formData.genres" multiple>
-            <option value="Роман">Роман</option>
-            <option value="Фантастика">Фантастика</option>
-            <option value="Детектив">Детектив</option>
-            <option value="Бизнес-книга">Бизнес-книга</option>
-            <option value="Техническая-литература">Техническая-литература</option>
-        </select>
-
-        <span>Зажмите Ctrl для выбора нескольких жанров</span>
+        <SSelect v-model="formData.genres" :options="genreOptions" placeholder="Выберите жанры"
+            :error="errors.genres" />
 
         <div class="checkbox">
-            <input type="checkbox" id="adult" v-model="formData.isAdult">
-            <label for="adult">18+</label>
+            <SCheckbox v-model="formData.isAdult">18+</SCheckbox>
         </div>
 
         <div v-if="errors && (errors.title || errors.genres)" class="errors-block">
@@ -28,13 +21,14 @@
         </div>
 
         <div class="form-buttons">
-            <button type="submit">{{ submitText }}</button>
-            <button type="button" @click="$emit('cancel')">Отменить</button>
+            <SButton>{{ submitText }}</SButton>
+            <SButton outlined @click="$emit('cancel')">Отменить</SButton>
         </div>
-    </form>
+    </SForm>
 </template>
 
 <script setup>
+import { SForm, SFormRow, SInput, SSelect, SCheckbox, SButton } from 'startup-ui'
 //Встроенные функции
 import { computed, onMounted, watch } from 'vue'
 import { useTemplateRef } from 'vue'
@@ -51,7 +45,12 @@ const emit = defineEmits(['update:modelValue', 'submit', 'cancel'])
 const titleInput = useTemplateRef('titleInput')
 //Фокус на ref ссылку на input title
 onMounted(() => {
-    titleInput.value?.focus()
+    if (titleInput.value?.$el) {
+        const inputElement = titleInput.value.$el.querySelector('input')
+        if (inputElement) {
+            inputElement.focus()
+        }
+    }
 })
 
 // Двустороннее связывание данных формы
@@ -73,6 +72,14 @@ watch(
         }
     }, 500)
 )
+
+const genreOptions = {
+    'Роман': 'Роман',
+    'Фантастика': 'Фантастика',
+    'Детектив': 'Детектив',
+    'Бизнес-книга': 'Бизнес-книга',
+    'Техническая-литература': 'Техническая литература'
+}
 </script>
 
 <style scoped>
@@ -96,22 +103,6 @@ select[multiple] {
     margin-top: 16px;
 }
 
-.form-buttons button {
-    flex: 1;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.form-buttons button:first-child {
-    background: #1da1f2;
-    color: white;
-}
-
-.form-buttons button:last-child {
-    background: #ddd;
-}
 
 .checkbox {
     display: flex;

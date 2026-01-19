@@ -4,8 +4,8 @@
             <h3>{{ book.title }}</h3>
             <p>{{ book.description }}</p>
             <span>Жанр:
-                <span v-for="genre in book.genres" :key="genre">
-                    {{ genre }}
+                <span class="genre-tag">
+                    {{ displayGenre }}
                 </span>
                 <b v-if="book.isAdult">18+</b>
             </span>
@@ -31,14 +31,15 @@
         </div>
 
         <div class="book-actions">
-            <button @click="$emit('edit')" class="btn-edit">Редактировать</button>
-            <button @click="$emit('delete')" class="btn-delete">Удалить</button>
+            <SButton outlined @click="$emit('edit')">Редактировать</SButton>
+            <SButton @click="$emit('delete')">Удалить</SButton>
         </div>
 
     </div>
 </template>
 
 <script setup>
+import { SButton } from 'startup-ui';
 //Встроенные функции и пропсы
 import { computed } from 'vue'
 const props = defineProps({
@@ -53,6 +54,19 @@ const emit = defineEmits(['edit', 'delete', 'update:stars'])
 const setStars = (stars) => {
     emit('update:stars', stars)
 }
+
+const displayGenre = computed(() => {
+    const genres = props.book.genres
+
+    if (Array.isArray(genres)) {
+        if (genres.length > 0 && genres[0].length === 1) {
+            return genres.join('')
+        }
+        return genres[0] || ''
+    }
+
+    return genres || ''
+})
 </script>
 
 <style scoped>
