@@ -48,7 +48,7 @@
     margin: 0 0 15px 0;
     font-size: 28px;
     font-weight: 700;
-    color: #1da1f2;
+    color: #F04F0A;
 }
 
 .about-header p {
@@ -73,16 +73,5 @@
 
 .card-body {
     padding: 30px;
-}
-
-.card-body p {
-    margin: 0 0 20px 0;
-    line-height: 1.6;
-    color: #333;
-    font-size: 16px;
-}
-
-.card-body p:last-child {
-    margin-bottom: 0;
 }
 </style>

@@ -8,7 +8,6 @@
         </div>
         <div v-if="$route.path === '/'" class="header-actions">
           <SButton outlined @click="resetAllStars">Сбросить рейтинги</SButton>
-
           <SButton @click="showForm = true">Добавить книгу</SButton>
         </div>
       </div>
@@ -21,12 +20,11 @@
           О нас
         </RouterLink>
       </nav>
-
     </header>
 
     <SDialog v-if="showForm" v-model="showForm" :title="editingBookId ? 'Редактировать книгу' : 'Новая книга'"
-      width="700">
-      <BookForm style="width:700px" :modelValue="newBook" :errors="errors"
+      width="700" @update:modelValue="onDialogClose">
+      <BookForm style="width:700px" :key="formKey" :modelValue="newBook" :errors="errors"
         :submitText="editingBookId ? 'Сохранить' : 'Добавить'" @update:modelValue="newBook = $event"
         @submit="editingBookId ? updateBook() : addBook()" @cancel="cancelForm" />
     </SDialog>
@@ -38,16 +36,12 @@
     </div>
 
     <RouterView :books="books" @edit-book="editBook" @delete-book="deleteBook" @update-stars="updateStars" />
-
   </div>
 </template>
 
 <script setup>
-
-//Встроенные функции
 import { ref, computed } from 'vue'
-import { SButton, SDialog, SConfirm, SAlert, SHorizontalMenu, SStat } from 'startup-ui';
-
+import { SButton, SDialog, SConfirm, SAlert, SStat } from 'startup-ui';
 
 //Импорты картинок
 import bookImg1 from '@/assets/images/book1.png'
@@ -57,13 +51,22 @@ import bookImg4 from '@/assets/images/book4.png'
 import bookImg5 from '@/assets/images/book5.png'
 import bookImg6 from '@/assets/images/book6.png'
 //Импорт компонентов
-import BookCard from './components/BookCard.vue'
 import BookForm from './components/BookForm.vue'
-import Dialog from './components/Dialog.vue'
-//Состояние
+
+
 const editingBookId = ref(null)
+const formKey = ref(0)
 const showForm = ref(false)
 const totalBooks = computed(() => books.value.length)
+//Состояние для ошибок
+const errors = ref({
+  title: '',
+  genres: ''
+})
+//Динамическое получение ошибок
+const hasErrors = computed(() => {
+  return errors.value.title || errors.value.genres
+})
 
 //Удаление книги
 const deleteBook = (id) => {
@@ -79,64 +82,6 @@ const deleteBook = (id) => {
     }
   });
 }
-
-//Data книг
-const books = ref([
-  {
-    id: 1,
-    title: 'Мастер и Маргарита',
-    description: '«Мастер и Маргарита» — роман Михаила Афанасьевича Булгакова, работа над которым началась, по одним данным, в 1928 году, по другим — в 1929-м, и продолжалась вплоть до смерти писателя в марте 1940 года.',
-    genres: ['Роман'],
-    img: bookImg1,
-    isAdult: false,
-    stars: 5
-  },
-  {
-    id: 2,
-    title: 'Бэтман Аполло',
-    description: 'Главный герой — Рама, сравнительно недавно ставший вампиром. Ему предстоит разобраться в вампирском мироздании и подняться по иерархической лестнице, став Кавалером Ночи и ныряльщиком.',
-    genres: ['Роман'],
-    img: bookImg2,
-    isAdult: true,
-    stars: 4
-  },
-  {
-    id: 3,
-    title: 'Стратегическое управление на основе маркетингового анализа. Инструменты, проблемы, ситуации',
-    description: 'Книга в которой автор описывает классические и собственные инструменты стратегического управления и маркетингового анализа.',
-    genres: ['Бизнес-книга'],
-    img: bookImg3,
-    isAdult: false,
-    stars: 0
-  },
-  {
-    id: 4,
-    title: 'Чистый код: создание, анализ и рефакторинг. Библиотека программиста',
-    description: 'Даже плохой программный код может работать. Однако если код не является «чистым», это всегда будет мешать развитию проекта и компании-разработчика, отнимая значительные ресурсы на его поддержку и «укрощение».',
-    genres: ['Техническая-литература'],
-    img: bookImg4,
-    isAdult: true,
-    stars: 3
-  },
-  {
-    id: 5,
-    title: 'Копирайтинг: как не съесть собаку. Создаем тексты, которые продают',
-    description: 'Эта книга - набор методик, приемов и секретов по написанию продающих текстов (текстов для сайтов, полиграфии, коммерческих предложений и других рекламных целей).',
-    genres: ['Бизнес-книга'],
-    img: bookImg5,
-    isAdult: false,
-    stars: 0
-  }
-  , {
-    id: 6,
-    title: 'Магия утра. Как первый час дня определяет ваш успех',
-    description: 'Книга, которая помогла тысячам людей изменить жизнь за счет правильного начала дня и утренних ритуалов.',
-    genres: ['Бизнес-книга'],
-    img: bookImg6,
-    isAdult: false,
-    stars: 0
-  }
-])
 
 //Средний рейтинг
 const averageRating = computed(() => {
@@ -161,17 +106,6 @@ const newBook = ref({
   img: '',
   isAdult: false,
   stars: 0
-})
-
-//Состояние для ошибок
-const errors = ref({
-  title: '',
-  genres: ''
-})
-
-//Динамическое получение ошибок
-const hasErrors = computed(() => {
-  return errors.value.title || errors.value.genres
 })
 
 //Сброс рейтингов
@@ -273,6 +207,14 @@ const cancelForm = () => {
   editingBookId.value = null
   errors.value = { title: '', genres: '' }
   showForm.value = false
+  formKey.value += 1
+}
+
+const onDialogClose = (value) => {
+  showForm.value = value
+  if (!value) {
+    cancelForm()
+  }
 }
 
 //Обновление звезд в рейтинге
@@ -282,16 +224,73 @@ const updateStars = (bookId, newStars) => {
     book.stars = newStars
   }
 }
+
+//Data книг
+const books = ref([
+  {
+    id: 1,
+    title: 'Мастер и Маргарита',
+    description: '«Мастер и Маргарита» — роман Михаила Афанасьевича Булгакова, работа над которым началась, по одним данным, в 1928 году, по другим — в 1929-м, и продолжалась вплоть до смерти писателя в марте 1940 года.',
+    genres: ['Роман'],
+    img: bookImg1,
+    isAdult: false,
+    stars: 5
+  },
+  {
+    id: 2,
+    title: 'Бэтман Аполло',
+    description: 'Главный герой — Рама, сравнительно недавно ставший вампиром. Ему предстоит разобраться в вампирском мироздании и подняться по иерархической лестнице, став Кавалером Ночи и ныряльщиком.',
+    genres: ['Роман'],
+    img: bookImg2,
+    isAdult: true,
+    stars: 4
+  },
+  {
+    id: 3,
+    title: 'Стратегическое управление на основе маркетингового анализа. Инструменты, проблемы, ситуации',
+    description: 'Книга в которой автор описывает классические и собственные инструменты стратегического управления и маркетингового анализа.',
+    genres: ['Бизнес-книга'],
+    img: bookImg3,
+    isAdult: false,
+    stars: 0
+  },
+  {
+    id: 4,
+    title: 'Чистый код: создание, анализ и рефакторинг. Библиотека программиста',
+    description: 'Даже плохой программный код может работать. Однако если код не является «чистым», это всегда будет мешать развитию проекта и компании-разработчика, отнимая значительные ресурсы на его поддержку и «укрощение».',
+    genres: ['Техническая-литература'],
+    img: bookImg4,
+    isAdult: true,
+    stars: 3
+  },
+  {
+    id: 5,
+    title: 'Копирайтинг: как не съесть собаку. Создаем тексты, которые продают',
+    description: 'Эта книга - набор методик, приемов и секретов по написанию продающих текстов (текстов для сайтов, полиграфии, коммерческих предложений и других рекламных целей).',
+    genres: ['Бизнес-книга'],
+    img: bookImg5,
+    isAdult: false,
+    stars: 0
+  }
+  , {
+    id: 6,
+    title: 'Магия утра. Как первый час дня определяет ваш успех',
+    description: 'Книга, которая помогла тысячам людей изменить жизнь за счет правильного начала дня и утренних ритуалов.',
+    genres: ['Бизнес-книга'],
+    img: bookImg6,
+    isAdult: false,
+    stars: 0
+  }
+])
 </script>
 
-<style scoped>
+<style>
 .app {
   min-height: 100vh;
   background: #f5f8fa;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/*Стили для header*/
 .header {
   background: white;
   border-bottom: 1px solid #e1e8ed;
@@ -322,6 +321,41 @@ const updateStars = (bookId, newStars) => {
   border-top: 1px solid #e1e8ed;
 }
 
+.nav-link {
+  text-decoration: none;
+  background-color: #F04F0A;
+  color: #FFFFFF;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  background-color: #F1905F;
+  color: #FFFFFF;
+}
+
+.nav-link.active {
+  color: #F04F0A;
+  background-color: #FFFFFF;
+  border: 1px solid #F04F0A;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #F04F0A;
+}
+
+.header p {
+  margin: 0;
+  color: #657786;
+  font-size: 14px;
+}
+
 .stat-block {
   display: flex;
   flex-direction: column;
@@ -334,52 +368,6 @@ const updateStars = (bookId, newStars) => {
   color: #F04F0A;
 }
 
-.nav-link {
-  text-decoration: none;
-  background-color: #F04F0A;
-  color: #657786;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-link:hover {
-  background-color: #f5f8fa;
-  color: #1da1f2;
-}
-
-.nav-link.active {
-  color: #1da1f2;
-  background-color: #e8f4fe;
-}
-
-
-.header h1 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: #1da1f2;
-}
-
-.header p {
-  margin: 0;
-  color: #657786;
-  font-size: 14px;
-}
-
-.header button {
-  background: #1da1f2;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 15px;
-}
-
-/*Стили для booksContainer*/
 .booksContainer {
   max-width: 1200px;
   margin: 30px auto;
@@ -389,65 +377,9 @@ const updateStars = (bookId, newStars) => {
   gap: 24px;
 }
 
-/*Стили для блока статистики*/
-.stats {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 40px;
-  display: flex;
-  gap: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #657786;
-  margin-bottom: 8px;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: bold;
-  color: #1da1f2;
-}
-
-.reset-btn {
-  background: #ff9800;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.reset-btn:hover {
-  background: #f57c00;
-}
-
 .header-actions {
   display: flex;
   gap: 10px;
   align-items: center;
-}
-
-
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #657786;
 }
 </style>

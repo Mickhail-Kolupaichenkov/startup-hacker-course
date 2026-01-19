@@ -42,21 +42,20 @@
 
 <script setup>
 import { SButton, SImagePreview, STag } from 'startup-ui';
-//Встроенные функции и пропсы
 import { computed } from 'vue'
 const props = defineProps({
     book: Object
 })
 
 const rated = computed(() => props.book.stars >= 1)
-//Emits
+
 const emit = defineEmits(['edit', 'delete', 'update:stars'])
 
-//Emit для обновления рейтинга
 const setStars = (stars) => {
     emit('update:stars', stars)
 }
 
+//Преобразование жанра в строку
 const displayGenre = computed(() => {
     const genres = props.book.genres
 
@@ -107,23 +106,6 @@ const displayGenre = computed(() => {
     flex-grow: 1;
 }
 
-.cardItem_info>span {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #657786;
-}
-
-.cardItem_info span span {
-    display: inline !important;
-    color: #1da1f2;
-}
-
-.cardItem_info span span:not(:last-child)::after {
-    content: ', ';
-    color: #657786;
-}
-
 .cardItem_img {
     position: relative;
     height: 280px;
@@ -144,7 +126,6 @@ const displayGenre = computed(() => {
     justify-content: center;
     overflow: hidden;
 }
-
 
 .preview-wrapper .s-imagepreview img {
     width: 100% !important;
@@ -255,28 +236,6 @@ const displayGenre = computed(() => {
     padding: 15px 20px;
     border-top: 1px solid #e1e8ed;
     background: #f9f9f9;
-}
-
-.btn-edit {
-    background: #1da1f2;
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    flex: 1;
-}
-
-.btn-delete {
-    background: #e0245e;
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    flex: 1;
 }
 
 .cardItem.rated {
