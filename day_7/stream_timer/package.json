@@ -1,5 +1,5 @@
 {
-  "name": "challenge-1",
+  "name": "stream_timer",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
