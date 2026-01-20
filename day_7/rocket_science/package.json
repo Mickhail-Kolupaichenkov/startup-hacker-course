@@ -7,10 +7,14 @@
     "preview": "vite preview --port 4173"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^6.3.0",
+    "startup-ui": "^0.6.13",
+    "tinymce": "^8.3.2",
     "vue": "^3.5.14"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.4",
+    "sass": "^1.97.2",
     "vite": "^6.3.5",
     "vitest": "^3.1.4"
   },
