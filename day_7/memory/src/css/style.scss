@@ -17,3 +17,87 @@ h1, h2, h3, h4, h5, h6 {
 .app-container {
     height: 100%;
 }
+
+:root {
+    /* Черный, белый и серый */
+    --s-white: #ffffff;
+    --s-black: #000000;
+    --s-gray: #f2f2f2;
+    
+    /* Фоновые цвета */
+    --s-bg-header: #081935;
+    --s-bg-subheader: #1A3158;
+    --s-bg: #f2f3f4;
+    
+    /* Цвета бордюров */
+    --s-border: #d1d1d1;
+    --s-border-light: #666666;
+    
+    /* Цвета текста */
+    --s-text: #000000;
+    --s-text-light: #999999;
+    --s-text-lightest: #cccccc;
+    
+    /* Брендовый цвет и его оттенки (оранжевый) */
+    --s-primary: #f04f0a;
+    --s-primary-dark: #c63a06;
+    --s-primary-darkest: #802703;
+    --s-primary-light: #f1905f;
+    --s-primary-lightest: #f8eeea;
+    
+    /* Красный цвет и его оттенки */
+    --s-red: #ea524a;
+    --s-red-dark: #d33229;
+    --s-red-light: #ffbfbf;
+    --s-red-lightest: #ffece8;
+    
+    /* Желтый цвет и его оттенки */
+    --s-yellow: #e6a23c;
+    --s-yellow-dark: #b88230;
+    --s-yellow-light: #eebe77;
+    --s-yellow-lightest: #faecd8;
+    
+    /* Зеленый цвет и его оттенки */
+    --s-green: #53b753;
+    --s-green-dark: #3f983f;
+    --s-green-light: #65bf65;
+    --s-green-lightest: #b8e5b8;
+    
+    /* Размеры */
+    --s-base-width: 1200px;
+    --s-base-margin: 20px;
+    --s-base-padding: 20px;
+    
+    /* Размеры интерфейсов */
+    --s-field-height: 32px;
+    
+    /* Типографика */
+    --s-font-family: 'Open Sans', sans-serif;
+    --s-font-size: 14px;
+    --s-h1-font-size: 2.2rem;
+    --s-h2-font-size: 1.7rem;
+    --s-h3-font-size: 1.4rem;
+    --s-h4-font-size: 1.2rem;
+    
+    /* Дополнительная стилизация */
+    --s-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+    --s-border-radius: 6px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--s-font-family);
+    color: var(--s-text);
+    background-color: var(--s-bg);
+    line-height: 1.6;
+    font-size: var(--s-font-size);
+}
+
+.text-center {
+    text-align: center;
+}
