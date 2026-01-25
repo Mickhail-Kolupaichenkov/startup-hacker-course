@@ -8,11 +8,6 @@
             <div class="s-memory-stats">
                 <div class="s-memory-stat">
                     <span class="s-memory-stat-label">Уровень:</span>
-                    <!-- <select v-model="difficulty" @change="startNewGame" class="s-memory-select">
-                        <option value="12">Легкий (12 карт)</option>
-                        <option value="24">Средний (24 карты)</option>
-                        <option value="36">Сложный (36 карт)</option>
-                    </select> -->
                     <SSelect v-model="difficulty" :options="difficultyOptions" placeholder="Выберите уровень:"
                         @change="startNewGame" />
                 </div>
@@ -24,7 +19,7 @@
 
                 <div class="s-memory-stat">
                     <span class="s-memory-stat-label">Осталось:</span>
-                    <span class="s-memory-stat-value">{{ remainingPairs }} пар</span>
+                    <span class="s-memory-stat-value">{{ changePairsText }}</span>
                 </div>
 
                 <div class="s-memory-stat">
@@ -39,7 +34,7 @@
                 <div class="s-memory-grid" :style="gridStyle">
                     <Card v-for="card in cards" :key="card.id" :card="card"
                         :is-flipped="card.isFlipped || card.isMatched" :is-matched="card.isMatched"
-                        @click="flipCard(card)" />
+                        @click="flipCard(card)" :style="{ visibility: card.isMatched ? 'hidden' : 'visible' }" />
                 </div>
             </div>
 
@@ -94,6 +89,7 @@ const difficultyOptions = {
     '24': 'Средний (24 карты)',
     '36': 'Сложный (36 карт)'
 }
+
 
 // Генерация карт
 const generateCards = (count) => {
@@ -251,6 +247,15 @@ const gradeClass = computed(() => {
     return 's-memory-grade-poor'
 })
 
+// Склонение остатка карточек
+const changePairsText = computed(() => {
+    const pairs = remainingPairs.value;
+
+    if (pairs === 1) return '1 пара';
+    if (pairs >= 2 && pairs <= 4) return `${pairs} пары`;
+    return `${pairs} пар`;
+});
+
 // Инициализация
 onMounted(() => {
     startNewGame()
@@ -286,6 +291,7 @@ onMounted(() => {
         color: var(--s-text);
         margin: 0;
     }
+
 
     &-stats {
         display: grid;
